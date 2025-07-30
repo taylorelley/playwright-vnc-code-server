@@ -268,9 +268,10 @@ fi
 cat > /usr/local/bin/start-vnc-server << VNC_SCRIPT
 #!/bin/bash
 
-DISPLAY_NUM=$DISPLAY_NUM
-VNC_PORT=$VNC_PORT
-export DISPLAY=:\$DISPLAY_NUM
+# Allow overriding via environment but fall back to install-time defaults
+DISPLAY_NUM=\${DISPLAY_NUM:-$DISPLAY_NUM}
+VNC_PORT=\${VNC_PORT:-$VNC_PORT}
+export DISPLAY=:\${DISPLAY_NUM}
 
 echo "Starting VNC server on display :\$DISPLAY_NUM"
 
@@ -716,6 +717,8 @@ Type=exec
 User=root
 Group=root
 Environment="HOME=/root"
+Environment="DISPLAY_NUM=$DISPLAY_NUM"
+Environment="VNC_PORT=$VNC_PORT"
 Environment="DISPLAY=:$DISPLAY_NUM"
 ExecStart=/usr/local/bin/start-vnc-server
 Restart=always
